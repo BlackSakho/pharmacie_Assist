@@ -1,13 +1,15 @@
-import { useState, useEffect } from 'react';
-import { Pill, Plus, Search, Package, Euro } from 'lucide-react';
-import { toast } from 'react-hot-toast';
-import * as api from '../../services/api';
-import { Medication } from '../../types/models';
+import { useState, useEffect } from "react";
+import { Pill, Plus, Search, Package, Euro } from "lucide-react";
+import { toast } from "react-hot-toast";
+import * as api from "../../services/api";
+import { Medication } from "../../types/models";
+import { useNavigate } from "react-router-dom";
 
 const MedicationManagement = () => {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [medications, setMedications] = useState<Medication[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     loadMedications();
@@ -18,63 +20,66 @@ const MedicationManagement = () => {
       const { data } = await api.getMedications();
       setMedications(data);
     } catch (error) {
-      toast.error('Erreur lors du chargement des médicaments');
+      toast.error("Erreur lors du chargement des médicaments");
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm('Êtes-vous sûr de vouloir supprimer ce médicament ?')) {
+    if (!window.confirm("Êtes-vous sûr de vouloir supprimer ce médicament ?")) {
       return;
     }
 
     try {
       await api.deleteMedication(id);
-      toast.success('Médicament supprimé avec succès');
+      toast.success("Médicament supprimé avec succès");
       loadMedications();
     } catch (error) {
-      toast.error('Erreur lors de la suppression du médicament');
+      toast.error("Erreur lors de la suppression du médicament");
     }
   };
 
-  const filteredMedications = medications.filter(medication =>
+  const filteredMedications = medications.filter((medication) =>
     medication.nom.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="w-12 h-12 border-b-2 rounded-full animate-spin border-primary-600"></div>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container px-4 py-8 mx-auto">
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center space-x-4">
-          <Pill className="h-8 w-8 text-primary-600" />
+          <Pill className="w-8 h-8 text-primary-600" />
           <h1 className="text-3xl font-bold text-gray-900">
             Gestion des médicaments
           </h1>
         </div>
-        <button className="flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors duration-200">
-          <Plus className="h-5 w-5 mr-2" />
+        <button
+          onClick={() => navigate("/dashboard/medications/add")}
+          className="flex items-center px-4 py-2 text-white transition-colors duration-200 rounded-lg bg-primary-600 hover:bg-primary-700"
+        >
+          <Plus className="w-5 h-5 mr-2" />
           Ajouter un médicament
         </button>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm mb-8">
+      <div className="mb-8 bg-white rounded-lg shadow-sm">
         <div className="p-4 border-b border-gray-200">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+            <Search className="absolute w-5 h-5 text-gray-400 transform -translate-y-1/2 left-3 top-1/2" />
             <input
               type="text"
               placeholder="Rechercher un médicament..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              className="w-full py-2 pl-10 pr-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             />
           </div>
         </div>
@@ -83,19 +88,22 @@ const MedicationManagement = () => {
           <table className="w-full">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
                   Médicament
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
                   Description
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
                   Prix
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
                   Disponibilité
                 </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                  Photo
+                </th>
+                <th className="px-6 py-3 text-xs font-medium tracking-wider text-right text-gray-500 uppercase">
                   Actions
                 </th>
               </tr>
@@ -115,26 +123,39 @@ const MedicationManagement = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center text-sm text-gray-900">
-                      <Euro className="h-4 w-4 mr-1" />
-                      {medication.disponibilites[0]?.prix.toFixed(2) || 'N/A'}
+                      <Euro className="w-4 h-4 mr-1" />
+                      {medication.disponibilites[0]?.prix.toFixed(2) || "N/A"}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center text-sm">
-                      <Package className="h-4 w-4 mr-2" />
-                      <span className={`${
-                        medication.disponibilites.some(d => d.disponible)
-                          ? 'text-success-600'
-                          : 'text-error-600'
-                      }`}>
-                        {medication.disponibilites.some(d => d.disponible)
-                          ? 'Disponible'
-                          : 'Indisponible'}
+                      <Package className="w-4 h-4 mr-2" />
+                      <span
+                        className={`${
+                          medication.disponibilites.some((d) => d.disponible)
+                            ? "text-success-600"
+                            : "text-error-600"
+                        }`}
+                      >
+                        {medication.disponibilites.some((d) => d.disponible)
+                          ? "Disponible"
+                          : "Indisponible"}
                       </span>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <button className="text-primary-600 hover:text-primary-900 mr-4">
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {medication.photo ? (
+                      <img
+                        src={`http://localhost:5000/uploads/${medication.photo}`}
+                        alt={medication.nom}
+                        className="object-cover w-12 h-12 rounded"
+                      />
+                    ) : (
+                      <span className="text-gray-400">Aucune</span>
+                    )}
+                  </td>
+                  <td className="px-6 py-4 text-sm font-medium text-right whitespace-nowrap">
+                    <button className="mr-4 text-primary-600 hover:text-primary-900">
                       Modifier
                     </button>
                     <button

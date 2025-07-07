@@ -1,3 +1,7 @@
+const path = require("path");
+const fs = require("fs");
+const multer = require("multer");
+const upload = multer({ dest: "uploads/" });
 const Medicament = require("../models/medicament.model");
 
 exports.searchMedicament = async (req, res) => {
@@ -38,7 +42,17 @@ exports.getMedicamentById = async (req, res) => {
 
 exports.addMedicament = async (req, res) => {
   try {
-    const medicament = new Medicament(req.body);
+    const { nom, description, disponibilites } = req.body;
+    let photo = null;
+    if (req.file) {
+      photo = req.file.filename; // ou req.file.path si tu veux le chemin complet
+    }
+    const medicament = new Medicament({
+      nom,
+      description,
+      photo,
+      disponibilites: disponibilites ? JSON.parse(disponibilites) : [],
+    });
     await medicament.save();
     res.status(201).json(medicament);
   } catch (error) {

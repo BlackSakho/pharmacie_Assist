@@ -38,17 +38,17 @@ const Dashboard = () => {
   const links = user?.role === 'admin' ? adminLinks : pharmacistLinks;
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex items-center space-x-4 mb-8">
-        <LayoutDashboard className="h-8 w-8 text-primary-600" />
+    <div className="container px-4 py-8 mx-auto">
+      <div className="flex items-center mb-8 space-x-4">
+        <LayoutDashboard className="w-8 h-8 text-primary-600" />
         <h1 className="text-3xl font-bold text-gray-900">
           Tableau de bord
         </h1>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
-        <h2 className="text-xl font-semibold text-gray-900 mb-2">
-          Bienvenue, {user?.name}
+      <div className="p-6 mb-8 bg-white rounded-lg shadow-sm">
+        <h2 className="mb-2 text-xl font-semibold text-gray-900">
+          Bienvenue, {user?.nom}
         </h2>
         <p className="text-gray-600">
           {user?.role === 'admin' 
@@ -57,22 +57,22 @@ const Dashboard = () => {
         </p>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-6">
+      <div className="grid gap-6 md:grid-cols-2">
         {links.map((link) => {
           const Icon = link.icon;
           return (
             <Link
               key={link.path}
               to={link.path}
-              className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow duration-200"
+              className="p-6 transition-shadow duration-200 bg-white rounded-lg shadow-sm hover:shadow-md"
             >
               <div className="flex items-center space-x-4">
-                <Icon className="h-8 w-8 text-primary-600" />
+                <Icon className="w-8 h-8 text-primary-600" />
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900">
                     {link.title}
                   </h3>
-                  <p className="text-gray-600 mt-1">
+                  <p className="mt-1 text-gray-600">
                     {link.description}
                   </p>
                 </div>
@@ -82,9 +82,9 @@ const Dashboard = () => {
         })}
       </div>
 
-      <div className="mt-8 grid md:grid-cols-2 gap-6">
-        <div className="bg-white rounded-lg shadow-sm p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+      <div className="grid gap-6 mt-8 md:grid-cols-2">
+        <div className="p-6 bg-white rounded-lg shadow-sm">
+          <h3 className="mb-4 text-lg font-semibold text-gray-900">
             Statistiques rapides
           </h3>
           <div className="space-y-4">
@@ -100,7 +100,7 @@ const Dashboard = () => {
                 })}
               </p>
             </div>
-            {user?.role === 'pharmacist' && (
+            {user?.role === 'pharmacien' && (
               <div>
                 <p className="text-sm text-gray-600">Prochaine garde</p>
                 <p className="text-lg font-medium text-gray-900">
@@ -111,8 +111,8 @@ const Dashboard = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+        <div className="p-6 bg-white rounded-lg shadow-sm">
+          <h3 className="mb-4 text-lg font-semibold text-gray-900">
             Notifications récentes
           </h3>
           <div className="text-gray-600">

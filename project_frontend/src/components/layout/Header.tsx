@@ -92,7 +92,7 @@ const Header = () => {
                       transition={{ duration: 0.2 }}
                       className="absolute right-0 w-48 mt-2 bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5"
                     >
-                      {user.role !== "visitor" && (
+                      {user.role !== "visiteur" && (
                         <div className="py-1">
                           <Link
                             to="/dashboard"
@@ -175,7 +175,7 @@ const Header = () => {
 
               {user ? (
                 <div className="pt-4 border-t border-gray-200">
-                  {user.role !== "visitor" && (
+                  {user.role !== "visiteur" && (
                     <Link
                       to="/dashboard"
                       className="flex items-center py-2 text-gray-700 hover:text-primary-600"

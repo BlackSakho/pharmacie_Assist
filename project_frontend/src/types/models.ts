@@ -23,6 +23,7 @@ export interface Medication {
   _id: string;
   nom: string;
   description: string;
+  photo?: string; // URL de la photo
   disponibilites: Array<{
     pharmacieId: string;
     prix: number;

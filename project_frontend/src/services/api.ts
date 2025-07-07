@@ -61,6 +61,10 @@ export const createMedication = (data: {
     disponible: boolean;
   }>;
 }) => api.post("/medicaments", data);
+export const createMedicationWithPhoto = (formData: FormData) =>
+  api.post("/medicaments", formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
 export const updateMedication = (id: string, data: any) =>
   api.put(`/medicaments/${id}`, data);
 export const deleteMedication = (id: string) =>

@@ -12,7 +12,7 @@ const registerSchema = z.object({
   password: z
     .string()
     .min(6, "Le mot de passe doit contenir au moins 6 caractères"),
-  role: z.enum(["visitor", "pharmacist"] as const),
+  role: z.enum(["visiteur", "pharmacien"] as const),
 });
 
 type RegisterFormData = z.infer<typeof registerSchema>;
@@ -29,7 +29,7 @@ const Register = () => {
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
-      role: "visitor",
+      role: "visiteur",
     },
   });
 
@@ -38,8 +38,8 @@ const Register = () => {
       setIsLoading(true);
       // Adapter le rôle pour le backend
       let backendRole: UserRole = "pharmacien";
-      if (data.role === "visitor") backendRole = "pharmacien"; // ou "visiteur" si tu l'as dans ton backend
-      if (data.role === "pharmacist") backendRole = "pharmacien";
+      if (data.role === "visiteur") backendRole = "pharmacien"; // ou "visiteur" si tu l'as dans ton backend
+      if (data.role === "pharmacien") backendRole = "pharmacien";
       await registerUser(data.email, data.password, data.name, backendRole);
       navigate("/dashboard");
     } catch (error) {
@@ -148,8 +148,8 @@ const Register = () => {
                 {...register("role")}
                 className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
               >
-                <option value="visitor">Visiteur</option>
-                <option value="pharmacist">Pharmacien</option>
+                <option value="visiteur">Visiteur</option>
+                <option value="pharmacien">Pharmacien</option>
               </select>
               {errors.role && (
                 <p className="mt-1 text-sm text-error-600">
