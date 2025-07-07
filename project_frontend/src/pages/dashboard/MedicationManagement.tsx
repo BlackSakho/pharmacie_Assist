@@ -4,12 +4,14 @@ import { toast } from "react-hot-toast";
 import * as api from "../../services/api";
 import { Medication } from "../../types/models";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
 
 const MedicationManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [medications, setMedications] = useState<Medication[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   useEffect(() => {
     loadMedications();
@@ -40,9 +42,13 @@ const MedicationManagement = () => {
     }
   };
 
-  const filteredMedications = medications.filter((medication) =>
-    medication.nom.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredMedications = medications
+    .filter((medication) =>
+      medication.disponibilites.some((d) => d.pharmacieId === user?.pharmacieId)
+    )
+    .filter((medication) =>
+      medication.nom.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
   if (isLoading) {
     return (

@@ -22,7 +22,7 @@ const MedicationManagement = lazy(
 const UserManagement = lazy(() => import("./pages/dashboard/UserManagement"));
 const DutySchedule = lazy(() => import("./pages/dashboard/DutySchedule"));
 const NotFound = lazy(() => import("./pages/NotFound"));
-const AddMedication = lazy(() => import("./pages/dashboard/AddMedication"));
+const AddMedication = lazy(() => import("./pages/dashboard/addMedication"));
 
 function App() {
   const { user } = useAuth();

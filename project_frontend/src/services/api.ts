@@ -46,6 +46,7 @@ export const createPharmacy = (data: {
 export const updatePharmacy = (id: string, data: any) =>
   api.put(`/pharmacies/${id}`, data);
 export const deletePharmacy = (id: string) => api.delete(`/pharmacies/${id}`);
+export const getAllPharmacies = () => api.get("/pharmacies");
 
 // Médicaments
 export const searchMedications = (nom: string) =>
@@ -95,6 +96,7 @@ export const createUser = (data: {
 export const updateUser = (id: string, data: any) =>
   api.put(`/users/${id}`, data);
 export const deleteUser = (id: string) => api.delete(`/users/${id}`);
+export const toggleBlockUser = (id: string) => api.patch(`/users/${id}/block`);
 
 // IA Santé
 export const getHealthAdvice = (question: string) =>

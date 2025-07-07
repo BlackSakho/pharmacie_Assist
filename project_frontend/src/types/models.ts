@@ -2,7 +2,9 @@ export interface User {
   _id: string;
   nom: string;
   email: string;
-  role: 'admin' | 'pharmacien';
+  role: "admin" | "pharmacien";
+  isBlocked?: boolean;
+  pharmacieId?: string; // <-- Ajoute cette ligne
 }
 
 export interface Pharmacy {
