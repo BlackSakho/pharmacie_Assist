@@ -108,4 +108,5 @@ export const getMedicationsByPharmacie = () =>
 
 
 
+
 export default api;

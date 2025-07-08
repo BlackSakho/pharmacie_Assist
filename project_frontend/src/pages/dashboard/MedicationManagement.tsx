@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Pill, Plus, Search, Package, Euro } from "lucide-react";
+import { Pill, Plus, Search, Package } from "lucide-react";
 import { toast } from "react-hot-toast";
 import * as api from "../../services/api";
 import { Medication } from "../../types/models";

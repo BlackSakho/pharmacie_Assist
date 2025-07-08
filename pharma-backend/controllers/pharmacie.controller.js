@@ -2,9 +2,14 @@ const Pharmacie = require("../models/pharmacie.model");
 const Garde = require("../models/garde.model");
 
 exports.getAllGuardPharmacies = async (req, res) => {
-  const pharmacies = await Garde.find().populate("pharmacieId");
-  res.json(pharmacies);
+  try {
+    const gardes = await Garde.find().populate("pharmacieId");
+    res.json(gardes);
+  } catch (error) {
+    res.status(500).json({ message: "Erreur lors du chargement des gardes." });
+  }
 };
+
 
 exports.addPharmacie = async (req, res) => {
   const pharmacie = new Pharmacie(req.body);

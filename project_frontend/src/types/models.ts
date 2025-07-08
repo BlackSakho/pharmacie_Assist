@@ -36,7 +36,7 @@ export interface Medication {
 
 export interface DutySchedule {
   _id: string;
-  pharmacieId: string;
+  pharmacieId: string | Pharmacy; // ← ici on accepte l'ID ou l'objet Pharmacie
   date: string;
   heure_debut: string;
   heure_fin: string;
