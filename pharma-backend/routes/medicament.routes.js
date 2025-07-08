@@ -3,6 +3,8 @@ const router = express.Router();
 const medicamentController = require("../controllers/medicament.controller");
 const verifyToken = require("../middleware/auth.middleware");
 const permit = require("../middleware/role.middleware");
+const multer = require("multer");
+const upload = multer({ dest: "uploads/" });
 
 router.get(
   "/by-pharmacie",
@@ -17,6 +19,7 @@ router.post(
   "/",
   verifyToken,
   permit("pharmacien"),
+  upload.single("photo"), // 👈 ajoute ceci ici
   medicamentController.addMedicament
 );
 router.put(

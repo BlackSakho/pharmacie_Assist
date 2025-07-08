@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import * as api from "../../services/api";
+import { useAuth } from "../../contexts/AuthContext"; // ✅ Import du contexte
 
 const AddMedication = () => {
   const [nom, setNom] = useState("");
@@ -11,7 +12,9 @@ const AddMedication = () => {
   const [disponibilites, setDisponibilites] = useState([
     { prix: "", disponible: true },
   ]);
+
   const navigate = useNavigate();
+  const { user } = useAuth(); // ✅ Récupération du user
 
   const handleDisponibiliteChange = (
     idx: number,
@@ -44,6 +47,12 @@ const AddMedication = () => {
       toast.error("Veuillez remplir toutes les disponibilités.");
       return;
     }
+
+    if (!user?.pharmacieId) {
+      toast.error("Pharmacie non trouvée pour cet utilisateur.");
+      return;
+    }
+
     setIsLoading(true);
     const formData = new FormData();
     formData.append("nom", nom);
@@ -55,6 +64,7 @@ const AddMedication = () => {
         disponibilites.map((d) => ({
           prix: Number(d.prix),
           disponible: d.disponible,
+          pharmacieId: user.pharmacieId, // ✅ ajout ici
         }))
       )
     );
@@ -110,7 +120,6 @@ const AddMedication = () => {
           <label className="block mb-2 font-medium">Disponibilités</label>
           {disponibilites.map((d, idx) => (
             <div key={idx} className="flex items-center mb-2 space-x-2">
-              
               <input
                 type="number"
                 placeholder="Prix"

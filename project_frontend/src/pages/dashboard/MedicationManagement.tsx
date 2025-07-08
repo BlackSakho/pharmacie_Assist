@@ -3,15 +3,20 @@ import { Pill, Plus, Search, Package, Euro } from "lucide-react";
 import { toast } from "react-hot-toast";
 import * as api from "../../services/api";
 import { Medication } from "../../types/models";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
+import AddMedicationForm from "./AddMedicationForm";
 
 const MedicationManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [medications, setMedications] = useState<Medication[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const navigate = useNavigate();
   const { user } = useAuth();
+
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingMedication, setEditingMedication] = useState<Medication | null>(
+    null
+  );
 
   useEffect(() => {
     loadMedications();
@@ -23,7 +28,10 @@ const MedicationManagement = () => {
       console.log("✅ Médicaments reçus :", data);
       setMedications(data);
     } catch (error: any) {
-      console.error("❌ Erreur lors du chargement :", error?.response?.data || error.message);
+      console.error(
+        "❌ Erreur lors du chargement :",
+        error?.response?.data || error.message
+      );
       toast.error("Erreur lors du chargement des médicaments");
     } finally {
       setIsLoading(false);
@@ -31,7 +39,8 @@ const MedicationManagement = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm("Êtes-vous sûr de vouloir supprimer ce médicament ?")) return;
+    if (!window.confirm("Êtes-vous sûr de vouloir supprimer ce médicament ?"))
+      return;
 
     try {
       await api.deleteMedication(id);
@@ -74,7 +83,7 @@ const MedicationManagement = () => {
           </h1>
         </div>
         <button
-          onClick={() => navigate("/dashboard/medications/add")}
+          onClick={() => setShowAddModal(true)}
           className="flex items-center px-4 py-2 text-white transition-colors duration-200 rounded-lg bg-primary-600 hover:bg-primary-700"
         >
           <Plus className="w-5 h-5 mr-2" />
@@ -135,8 +144,9 @@ const MedicationManagement = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center text-sm text-gray-900">
-                      <Euro className="w-4 h-4 mr-1" />
-                      {medication.disponibilites[0]?.prix.toFixed(2) || "N/A"}
+                      {medication.disponibilites[0]?.prix.toFixed(1) || "N/A"}
+                      
+                      <span className="mr-1 font-semibold">FCFA</span>
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -167,7 +177,13 @@ const MedicationManagement = () => {
                     )}
                   </td>
                   <td className="px-6 py-4 text-sm font-medium text-right whitespace-nowrap">
-                    <button className="mr-4 text-primary-600 hover:text-primary-900">
+                    <button
+                      onClick={() => {
+                        setEditingMedication(medication);
+                        setShowEditModal(true);
+                      }}
+                      className="mr-4 text-primary-600 hover:text-primary-900"
+                    >
                       Modifier
                     </button>
                     <button
@@ -183,6 +199,41 @@ const MedicationManagement = () => {
           </table>
         </div>
       </div>
+
+      {showAddModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
+          <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-lg">
+            <h2 className="mb-4 text-lg font-bold">Ajouter un médicament</h2>
+            <AddMedicationForm
+              onSuccess={() => {
+                setShowAddModal(false);
+                loadMedications();
+              }}
+              onCancel={() => setShowAddModal(false)}
+            />
+          </div>
+        </div>
+      )}
+
+      {showEditModal && editingMedication && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
+          <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-lg">
+            <h2 className="mb-4 text-lg font-bold">Modifier le médicament</h2>
+            <AddMedicationForm
+              medication={editingMedication}
+              onSuccess={() => {
+                setShowEditModal(false);
+                setEditingMedication(null);
+                loadMedications();
+              }}
+              onCancel={() => {
+                setShowEditModal(false);
+                setEditingMedication(null);
+              }}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };
