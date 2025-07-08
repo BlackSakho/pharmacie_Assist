@@ -16,6 +16,9 @@ export interface User {
   email: string;
   nom: string;
   role: UserRole;
+  isBlocked?: boolean;
+  pharmacieId?: string;
+  
 }
 
 interface AuthContextType {

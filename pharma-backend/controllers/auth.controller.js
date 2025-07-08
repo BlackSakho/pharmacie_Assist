@@ -4,18 +4,25 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 exports.register = async (req, res) => {
-  const { nom, email, password, role } = req.body;
+  const { nom, email, password, role, pharmacieId } = req.body; // <-- ajoute pharmacieId
   const hashedPassword = await bcrypt.hash(password, 10);
-  const user = new User({ nom, email, password: hashedPassword, role });
+  const user = new User({
+    nom,
+    email,
+    password: hashedPassword,
+    role,
+    pharmacieId,
+  }); // <-- ajoute pharmacieId
   await user.save();
   const userToSend = {
     id: user._id,
     email: user.email,
     nom: user.nom,
     role: user.role,
+    pharmacieId: user.pharmacieId, // <-- ajoute pharmacieId
   };
   const token = jwt.sign(
-    { id: user._id, role: user.role },
+    { id: user._id, role: user.role, pharmacieId: user.pharmacieId }, // <-- ajoute pharmacieId
     process.env.JWT_SECRET
   );
   res.status(201).json({ token, user: userToSend });
@@ -28,7 +35,7 @@ exports.login = async (req, res) => {
     return res.status(401).json({ message: "Identifiants invalides" });
   }
   const token = jwt.sign(
-    { id: user._id, role: user.role },
+    { id: user._id, role: user.role, pharmacieId: user.pharmacieId },
     process.env.JWT_SECRET
   );
   const userToSend = {
@@ -36,6 +43,7 @@ exports.login = async (req, res) => {
     email: user.email,
     nom: user.nom,
     role: user.role,
+    pharmacieId: user.pharmacieId,
   };
   res.json({ token, user: userToSend });
 };

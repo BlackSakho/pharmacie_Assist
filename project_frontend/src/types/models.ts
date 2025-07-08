@@ -5,6 +5,7 @@ export interface User {
   role: "admin" | "pharmacien";
   isBlocked?: boolean;
   pharmacieId?: string; // <-- Ajoute cette ligne
+  
 }
 
 export interface Pharmacy {

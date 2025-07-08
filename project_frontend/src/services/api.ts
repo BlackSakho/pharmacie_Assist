@@ -92,6 +92,7 @@ export const createUser = (data: {
   email: string;
   password: string;
   role: string;
+  
 }) => api.post("/users", data);
 export const updateUser = (id: string, data: any) =>
   api.put(`/users/${id}`, data);
@@ -101,5 +102,10 @@ export const toggleBlockUser = (id: string) => api.patch(`/users/${id}/block`);
 // IA Santé
 export const getHealthAdvice = (question: string) =>
   api.post("/ia/conseils-sante", { question });
+
+export const getMedicationsByPharmacie = () =>
+  api.get("/medicaments/by-pharmacie");
+
+
 
 export default api;

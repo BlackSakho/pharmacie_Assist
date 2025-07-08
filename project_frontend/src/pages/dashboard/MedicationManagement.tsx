@@ -19,9 +19,11 @@ const MedicationManagement = () => {
 
   const loadMedications = async () => {
     try {
-      const { data } = await api.getMedications();
+      const { data } = await api.getMedicationsByPharmacie();
+      console.log("✅ Médicaments reçus :", data);
       setMedications(data);
-    } catch (error) {
+    } catch (error: any) {
+      console.error("❌ Erreur lors du chargement :", error?.response?.data || error.message);
       toast.error("Erreur lors du chargement des médicaments");
     } finally {
       setIsLoading(false);
@@ -29,9 +31,7 @@ const MedicationManagement = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm("Êtes-vous sûr de vouloir supprimer ce médicament ?")) {
-      return;
-    }
+    if (!window.confirm("Êtes-vous sûr de vouloir supprimer ce médicament ?")) return;
 
     try {
       await api.deleteMedication(id);
@@ -42,9 +42,15 @@ const MedicationManagement = () => {
     }
   };
 
+  const isSamePharmacie = (pharmId: any): boolean => {
+    if (!pharmId) return false;
+    if (typeof pharmId === "string") return pharmId === user?.pharmacieId;
+    return pharmId._id?.toString() === user?.pharmacieId;
+  };
+
   const filteredMedications = medications
     .filter((medication) =>
-      medication.disponibilites.some((d) => d.pharmacieId === user?.pharmacieId)
+      medication.disponibilites.some((d) => isSamePharmacie(d.pharmacieId))
     )
     .filter((medication) =>
       medication.nom.toLowerCase().includes(searchTerm.toLowerCase())

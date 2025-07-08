@@ -50,6 +50,7 @@ const Dashboard = () => {
         <h2 className="mb-2 text-xl font-semibold text-gray-900">
           Bienvenue, {user?.nom}
         </h2>
+        
         <p className="text-gray-600">
           {user?.role === 'admin' 
             ? 'Gérez les utilisateurs et les pharmacies du réseau.'
